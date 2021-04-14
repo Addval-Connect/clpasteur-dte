@@ -4,7 +4,8 @@
     "config": {
         "clusterName": "RealmCluster",
         "readPreference": "primary",
-        "wireProtocolEnabled": false
+        "wireProtocolEnabled": false,
+        "sync": {}
     },
     "version": 1
 }
