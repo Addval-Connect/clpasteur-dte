@@ -1,5 +1,5 @@
 {
-    "name": "mongodb-atlas",
+    "name": "base-dte",
     "type": "mongodb-atlas",
     "config": {
         "clusterName": "RealmCluster",
