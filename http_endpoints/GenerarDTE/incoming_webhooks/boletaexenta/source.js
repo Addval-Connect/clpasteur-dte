@@ -1,10 +1,8 @@
 // This function is the webhook's request handler.
 // exports({query: {servicios: '[{"monto": 1000, "codigo": 1, "nombre": "1", "cantidad": 1}]', paciente: '{"nombre": "nombre paciente", "codigo": 1, "rut": "16211150-7"}', ejecutivo: "nombre ejecutivo"}})
 exports = async function (payload, response) {
-  const servicesURI = decodeURIComponent(payload.query.servicios);
-  const pacienteURI = decodeURIComponent(payload.query.paciente);
-  let ejecutivoURI = decodeURIComponent(payload.query.ejecutivo);
-  let fechaBoletaURI = decodeURIComponent(payload.query.fecha);
+  const servicesURI = decodeURIComponent(payload.query.servicios), pacienteURI = decodeURIComponent(payload.query.paciente);
+  let ejecutivoURI = decodeURIComponent(payload.query.ejecutivo), fechaBoletaURI = decodeURIComponent(payload.query.fecha);
   const boletaExenta = context.services.get("base-dte").db(database).collection("boleta-exenta")
   const produccion = payload.query.produccion || 0;
   let database = produccion == 1 ? "dte-production" : "dte", retry = produccion == 1 ? 10 : 0, services = {}, paciente = {}, boletaUri = "generar-xml-uri";
@@ -31,7 +29,6 @@ exports = async function (payload, response) {
   }
 
   let ejecutivo = ejecutivoURI || "-";
-
   let ultimoFolio = await boletaExenta.findOne({ "ultimoFolio": true });
   let nuevoFolio = ultimoFolio.folio + 1;
 
