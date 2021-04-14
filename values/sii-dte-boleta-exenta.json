@@ -1,0 +1,22 @@
+{
+    "from_secret": false,
+    "name": "sii-dte-boleta-exenta",
+    "value": {
+        "Encabezado": {
+            "Emisor": {
+                "CmnaOrigen": "Vitacura",
+                "DirOrigen": "Santiago",
+                "GiroEmisor": "CENTRO MEDICO OFTALMOLOGICO",
+                "RUTEmisor": "78730160-6",
+                "RznSocEmisor": "SERVICIOS MEDICOS LUIS PASTEUR SA"
+            },
+            "IdDoc": {
+                "Folio": 1,
+                "TipoDTE": 41
+            },
+            "Receptor": {
+                "RUTRecep": "66666666-6"
+            }
+        }
+    }
+}

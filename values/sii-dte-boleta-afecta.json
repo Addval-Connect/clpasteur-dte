@@ -1,0 +1,25 @@
+{
+    "from_secret": false,
+    "name": "sii-dte-boleta-afecta",
+    "value": {
+        "Encabezado": {
+            "Emisor": {
+                "CmnaOrigen": "Santiago",
+                "DirOrigen": "Santiago",
+                "GiroEmisor": "CENTRO MEDICO OFTALMOLOGICO",
+                "RUTEmisor": "78730160-6",
+                "RznSocEmisor": "SERVICIOS MEDICOS LUIS PASTEUR S.A."
+            },
+            "IdDoc": {
+                "Folio": 1,
+                "TipoDTE": 39
+            },
+            "Receptor": {
+                "CmnaRecep": "Santiago",
+                "DirRecep": "Santiago",
+                "RUTRecep": "66666666-6",
+                "RznSocRecep": "Sin RUT"
+            }
+        }
+    }
+}

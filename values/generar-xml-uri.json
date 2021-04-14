@@ -1,0 +1,5 @@
+{
+    "name": "generar-xml-uri",
+    "value": "https://api.libredte.cl/api/v1/libredte/dte/documentos/generar?normalizar=1\u0026formato=json\u0026enviar_sii=0\u0026gzip=0\u0026retry=1",
+    "from_secret": false
+}

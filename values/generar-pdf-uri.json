@@ -1,0 +1,5 @@
+{
+    "name": "generar-pdf-uri",
+    "value": "https://api.libredte.cl/api/v1/libredte/dte/documentos/pdf",
+    "from_secret": false
+}

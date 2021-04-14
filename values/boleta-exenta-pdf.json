@@ -1,0 +1,56 @@
+{
+    "from_secret": false,
+    "name": "boleta-exenta-pdf",
+    "value": {
+        "cedible": true,
+        "copias_cedibles": 1,
+        "copias_tributarias": 1,
+        "extra": {
+            "codigo_barras": {
+                "cotizacion": true,
+                "dte": true,
+                "incluirrut": false
+            },
+            "color": {
+                "razonsocial": [
+                    14,
+                    66,
+                    170
+                ]
+            },
+            "detalle": {
+                "ancho": {
+                    "CdgItem": 30,
+                    "DescuentoMonto": 22,
+                    "MontoItem": 22,
+                    "PrcItem": 22,
+                    "QtyItem": 15,
+                    "RecargoMonto": 22
+                },
+                "fuente": 9,
+                "posicion": 0
+            },
+            "emisor": {
+                "direccion": "Avda. Luis Pasteur 5917, Vitacura. Santiago",
+                "email": false,
+                "giro": "Centro Médico Oftalmológico Arrendamiento y Administración de Bienes Inmuebles",
+                "razonsocial": "Servicios Médicos Luis Pasteur S.A.",
+                "telefono": "22520 5900",
+                "web": "www.clinicapasteur.cl"
+            },
+            "img": {
+                "cotizacion": "",
+                "historial": "",
+                "logo": "",
+                "pie": ""
+            }
+        },
+        "footer": {
+            "left": "Clínica Pasteur",
+            "right": "www.clinicapasteur.cl"
+        },
+        "formato": "general",
+        "webVerificacion": false,
+        "xml": ""
+    }
+}

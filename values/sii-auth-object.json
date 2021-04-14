@@ -1,0 +1,10 @@
+{
+    "from_secret": false,
+    "name": "sii-auth-object",
+    "value": {
+        "cert": {
+            "cert-data": "",
+            "pkey-data": ""
+        }
+    }
+}
