@@ -1,6 +1,7 @@
 {
     "collection": "boleta-exenta",
     "database": "dte",
+    "id": "607496945f21c085bf63ae53",
     "roles": [
         {
             "name": "default",
@@ -10,5 +11,6 @@
             "search": true,
             "additional_fields": {}
         }
-    ]
+    ],
+    "schema": {}
 }
