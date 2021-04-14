@@ -1,0 +1,11 @@
+[
+    {
+        "path": "index.html",
+        "attrs": [
+            {
+                "name": "Content-Type",
+                "value": "application/html"
+            }
+        ]
+    }
+]
