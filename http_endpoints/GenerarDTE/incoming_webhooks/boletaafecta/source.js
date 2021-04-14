@@ -9,6 +9,9 @@ exports = async function (payload, response) {
   const replaceDiacritics  = (value) => {
     return context.functions.execute("replaceDiacritics", value);
   }
+  const getValue = (key) => {
+    return context.values.get(key);
+  }
 
   try {
     services = JSON.parse(servicesURI);
@@ -38,14 +41,7 @@ exports = async function (payload, response) {
   let nuevoFolio = ultimoFolio.folio + 1;
 
   const axios = require('axios');
-
-  const caf = context.values.get("caf-base64-afecta");
-  const certData = context.values.get("cert-data");
-  const pkeyData = context.values.get("pkey-data");
-  const uri = context.values.get(boletaUri);
-  const resolucion = context.values.get("sii-resolucion-boletas-afectas");
-  const libreDTEAuthHeader = context.values.get("libredte-authorizarion-header");
-
+  const caf = getValue("caf-base64-afecta"), certData = getValue("cert-data"), pkeyData = getValue("pkey-data"), uri = getValue(boletaUri), resolucion = getValue("sii-resolucion-boletas-afectas"), libreDTEAuthHeader = getValue("libredte-authorizarion-header");
   let siiAuthObject = context.values.get("sii-auth-object");
   siiAuthObject.cert["cert-data"] = certData;
   siiAuthObject.cert["pkey-data"] = pkeyData;
@@ -59,7 +55,6 @@ exports = async function (payload, response) {
   boletaDTE["Referencia"].push({ "RazonRef": ejecutivo });
 
   boletaDTE["Detalle"] = [];
-  let total = 0;
 
   for (let service of services) {
     total = total + (service.monto * service.cantidad);
