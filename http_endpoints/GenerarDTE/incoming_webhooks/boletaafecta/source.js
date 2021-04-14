@@ -1,12 +1,9 @@
 // This function is the webhook's request handler.
 // exports({query: {servicios: '[{"monto": 1000, "codigo": 1, "nombre": "1", "cantidad": 1}]', paciente: '{"nombre": "nombre paciente", "codigo": 1, "rut": "16211150-7"}', ejecutivo: "nombre ejecutivo"}})
 exports = async function (payload, response) {
-  const servicesURI = decodeURIComponent(payload.query.servicios);
-  const pacienteURI = decodeURIComponent(payload.query.paciente);
-  const ejecutivoURI = decodeURIComponent(payload.query.ejecutivo);
-  const produccion = payload.query.produccion || 0;
-  let database = produccion == 1 ? "dte-production" : "dte", boletaUri = "generar-xml-uri", services = {}, paciente = {} , total = 0;
-  const replaceDiacritics  = (value) => {
+  const servicesURI = decodeURIComponent(payload.query.servicios), pacienteURI = decodeURIComponent(payload.query.paciente), ejecutivoURI = decodeURIComponent(payload.query.ejecutivo), produccion = payload.query.produccion || 0;
+  let database = produccion == 1 ? "dte-production" : "dte", boletaUri = "generar-xml-uri", services = {}, paciente = {}, total = 0;
+  const replaceDiacritics = (value) => {
     return context.functions.execute("replaceDiacritics", value);
   }
   const getValue = (key) => {
