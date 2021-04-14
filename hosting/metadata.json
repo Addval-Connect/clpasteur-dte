@@ -7,5 +7,50 @@
                 "value": "application/html"
             }
         ]
-    }
+    },
+    {
+        "path": "boletaafecta.html",
+        "attrs": [
+            {
+                "name": "Content-Type",
+                "value": "application/html"
+            }
+        ]
+    },
+    {
+        "path": "boletaexenta.html",
+        "attrs": [
+            {
+                "name": "Content-Type",
+                "value": "application/html"
+            }
+        ]
+    },
+    {
+        "path": "notadecredito.html",
+        "attrs": [
+            {
+                "name": "Content-Type",
+                "value": "application/html"
+            }
+        ]
+    },
+    {
+        "path": "js/*",
+        "attrs": [
+            {
+                "name": "Content-Type",
+                "value": "text/javascript"
+            }
+        ]
+    },
+    {
+        "path": "encabezado-boleta.png",
+        "attrs": [
+            {
+                "name": "Content-Type",
+                "value": "image/*"
+            }
+        ]
+    },
 ]

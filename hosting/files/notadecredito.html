@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Nota de Crédito - Clínica Pasteur</title>
+    <style>
+        html {
+            font-family: 'helvetica neue', helvetica, arial, sans-serif;
+            color: #01515c;
+        }
+
+        @media print {
+            #boleta-sii {
+                page-break-before: always;
+            }
+
+            #boleta-receptor {
+                page-break-before: always;
+            }
+        }
+
+        #folio {
+            vertical-align: top;
+            border: 1px solid#01515c;
+            border-radius: 5px;
+            padding: 0.5em;
+            color: #01515c;
+        }
+
+        table {
+            border-spacing: 0;
+            border: 1px solid#01515c;
+            border-radius: 5px;
+        }
+
+        .no-border {
+            border: 0
+        }
+
+        .border-bottom {
+            border-bottom: 1px solid #01515c;
+        }
+
+        .border-right {
+            border-right: 1px solid #01515c;
+        }
+
+        #items td {
+            text-align: right;
+            border-right: 1px solid #01515c;
+            padding-right: 0.5em;
+        }
+
+        th {
+            font-size: small;
+        }
+    </style>
+
+    <script src="https://integradorboletaselectronicas-iivwm.mongodbstitch.com/js/bcmath-min.js"
+        type="text/javascript"></script>
+    <script src="https://integradorboletaselectronicas-iivwm.mongodbstitch.com/js/pdf417-min.js"
+        type="text/javascript"></script>
+
+    <script>
+        window.onload = function () {
+
+            const urlParams = new URLSearchParams(window.location.search);
+            let folioParam = urlParams.get('folio') || 6
+            let produccionParam = urlParams.get('produccion') ||  0
+
+            // HTTP CLIENT CLASS
+            var HttpClient = function () {
+                this.get = function (aUrl, aCallback) {
+                    var anHttpRequest = new XMLHttpRequest();
+                    anHttpRequest.onreadystatechange = function () {
+                        if (anHttpRequest.readyState == 4 && anHttpRequest.status == 200)
+                            aCallback(anHttpRequest.responseText);
+                    }
+
+                    anHttpRequest.open("GET", aUrl, true);
+                    anHttpRequest.send(null);
+                }
+            }
+
+            const formatter = new Intl.NumberFormat('es-CL', {
+                style: 'currency',
+                currency: 'CLP',
+                minimumFractionDigits: 0
+            })
+
+            // GET INVOICE DATA
+            var client = new HttpClient();
+            response =
+                client.get(`https://webhooks.mongodb-realm.com/api/client/v2.0/app/integradorboletaselectronicas-iivwm/service/GenerarDTE/incoming_webhook/notadecreditohtml?folio=${folioParam}&produccion=${produccionParam}`, function (response) {
+                    let boletas = {}
+
+                    try {
+                        res = JSON.parse(response);
+                        boletas = res;
+                    } catch {
+                        alert("Documento no válido.")
+                        return
+                    }
+                    console.log(boletas)
+                    var parser = new DOMParser();
+                    dte = parser.parseFromString(boletas.dte, 'text/xml')
+                    //sii = parser.parseFromString(boletas.sii, 'text/xml')
+                    //receptor = parser.parseFromString(boletas.receptor, 'text/xml')
+
+                    // UPDATE INVOICE VALUES
+                    window.document.getElementById("numerofolio").textContent = boletas.notadecredito
+                    window.document.getElementById("anulafolio").textContent = dte.getElementsByTagName("Folio")[0].textContent;
+                    window.document.getElementById("nombre-paciente").textContent = dte.getElementsByTagName("RznSocRecep")[0].textContent;
+                    window.document.getElementById("rut-paciente").textContent = dte.getElementsByTagName("RUTRecep")[0].textContent;
+                    window.document.getElementById("cuenta-paciente").textContent = boletas.cuenta;
+                    window.document.getElementById("exento").textContent = formatter.format(dte.getElementsByTagName("MntExe")[0].textContent);
+                    window.document.getElementById("total").textContent = formatter.format(dte.getElementsByTagName("MntTotal")[0].textContent);
+                    window.document.getElementById("ejecutivo").textContent = boletas.ejecutivo;
+                    
+                    // PROCESS DATE
+                    let date = dte.getElementsByTagName("FchEmis")[0].textContent;
+                    let dateParts = date.split('-');
+                    let dateFormatted = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+                    window.document.getElementById("fecha").textContent = dateFormatted;
+
+                    // PROCESS SERVICES
+                    let servicios = dte.getElementsByTagName("Detalle");
+                    let itemsTable = window.document.getElementById("items")
+
+                    for (let servicio of servicios) {
+                        let row = itemsTable.insertRow(-1);
+                        let codigoCell = row.insertCell(0);
+                        let prestacionCell = row.insertCell(1);
+                        let cantidadCell = row.insertCell(2);
+                        let unitarioCell = row.insertCell(3);
+                        let subtotalCell = row.insertCell(4);
+                        let codigoPrestacion = "-"
+
+                        codigoCell.innerHTML = servicio.getElementsByTagName("VlrCodigo")[0].textContent
+                        prestacionCell.innerHTML = servicio.getElementsByTagName("NmbItem")[0].textContent
+
+                        cantidadCell.innerHTML = servicio.getElementsByTagName("QtyItem")[0].textContent;
+                        unitarioCell.innerHTML = formatter.format(servicio.getElementsByTagName("PrcItem")[0].textContent);
+                        subtotalCell.innerHTML = formatter.format(servicio.getElementsByTagName("MontoItem")[0].textContent);
+                    }
+
+                    function initBarcode(index = 0) {
+                        // INIT BARCODE
+                        PDF417.init(dte.getElementsByTagName("SignatureValue")[0].textContent);
+                        var barcode = PDF417.getBarcodeArray();
+
+                        // block sizes (width and height) in pixels
+                        var bw = 2;
+                        var bh = 2;
+
+                        // create canvas element based on number of columns and rows in barcode
+                        var canvas = document.createElement('canvas');
+                        canvas.width = bw * barcode['num_cols'];
+                        canvas.height = bh * barcode['num_rows'];
+                        document.getElementsByClassName('barcode')[index].appendChild(canvas);
+
+                        var ctx = canvas.getContext('2d');
+
+                        // graph barcode elements
+                        var y = 0;
+                        // for each row
+                        for (var r = 0; r < barcode['num_rows']; ++r) {
+                            var x = 0;
+                            // for each column
+                            for (var c = 0; c < barcode['num_cols']; ++c) {
+                                if (barcode['bcode'][r][c] == 1) {
+                                    ctx.fillRect(x, y, bw, bh);
+                                }
+                                x += bw;
+                            }
+                            y += bh;
+                        }
+                    }
+
+                    function generate(index = 0) {
+                        var textToEncode = document.getElementById("textToEncode");
+
+                        PDF417.init(textToEncode.value);
+
+                        var barcode = PDF417.getBarcodeArray();
+
+                        // block sizes (width and height) in pixels
+                        var bw = 2;
+                        var bh = 2;
+
+                        // create canvas element based on number of columns and rows in barcode
+                        var container = document.getElementsByClassName('barcode');
+                        container[index].removeChild(container[0].firstChild);
+
+                        var canvas = document.createElement('canvas');
+                        canvas.width = bw * barcode['num_cols'];
+                        canvas.height = bh * barcode['num_rows'];
+                        container[index].appendChild(canvas);
+
+                        var ctx = canvas.getContext('2d');
+
+                        // graph barcode elements
+                        var y = 0;
+                        // for each row
+                        for (var r = 0; r < barcode['num_rows']; ++r) {
+                            var x = 0;
+                            // for each column
+                            for (var c = 0; c < barcode['num_cols']; ++c) {
+                                if (barcode['bcode'][r][c] == 1) {
+                                    ctx.fillRect(x, y, bw, bh);
+                                }
+                                x += bw;
+                            }
+                            y += bh;
+                        }
+                    }
+
+                    // CLONE DOCUMENT AND UPDATE
+                    const boletaDte = document.getElementById("boleta-dte");
+                    const boletaSII = boletaDte.cloneNode(true);
+                    const boletaReceptor = boletaDte.cloneNode(true)
+                    document.getElementById("boleta-sii").appendChild(boletaSII);
+                    document.getElementById("boleta-receptor").appendChild(boletaReceptor);
+
+                    let copia = document.getElementsByClassName("copia-documento");
+                    copia[0].textContent = "ORIGINAL: SII";
+                    copia[1].textContent = "DUPLICADO: CLIENTE";
+                    copia[2].textContent = "TRIPLICADO: CONTROL INTERNO TESORERIA";
+
+                    initBarcode(0);
+                    initBarcode(1);
+                    initBarcode(2);
+                })
+        }
+
+
+    </script>
+</head>
+
+<body>
+    <div id="boleta-dte">
+        <div>
+            <table class="no-border" width="100%">
+                <tr>
+                    <td style="vertical-align: top; padding-bottom: 1em;">
+                        <img width="100%" src="./encabezado-boleta.png">
+                        <ul style="list-style-type: none; font-size: small;">
+                            <li>Fecha: <span id="fecha"></span></li>
+                            <li>Atendido por: <span id="ejecutivo"></span></li>
+                            <li>Cuenta: <span id="cuenta-paciente"></span></li>
+                        </ul>
+                    </td>
+                    <td width="33%" style="vertical-align: top;" align="center">
+                        <div id="folio">
+                            <h4>R.U.T.: 78.730.160-6</h4>
+                            <h4>NOTA DE CREDITO ELECTRÓNICA</h4>
+                            <h4>N. <span id="numerofolio">cargando nota ...</span></h4>
+                            <h4>ANULA BOLETA N. <span id="anulafolio">cargando nota ...</span></h4>
+                        </div>
+                        <p>S.I.I - SANTIAGO ORIENTE</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <table style="padding: 0.5em; margin-bottom: 1em;" width="100%">
+                            <tr>
+                                <th align="left">Nombre del Paciente</th>
+                                <th align="left">RUT</th>
+                            </tr>
+                            <tr>
+                                <td width="70%">
+                                    <span id="nombre-paciente">.</span>
+                                </td>
+                                <td width="30%">
+                                    <span id="rut-paciente">.</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <table width="100%" id="items" style="margin-bottom: 6em;">
+                        <tr>
+                            <th width="15%" class="border-bottom border-right">CODIGO</th>
+                            <th width="50%" class="border-bottom border-right">NOMBRE PRESTACION</th>
+                            <th width="5%" class="border-bottom border-right">CANT.</th>
+                            <th width="15%" class="border-bottom border-right">VALOR PRES.</th>
+                            <th width="15%" class="border-bottom border-right">VALOR TOTAL</th>
+                        </tr>
+                    </table>
+                </tr>
+            </table>
+            <table class="no-border" width="100%">
+                <tr>
+                    <td align="center">
+                        <div class="barcode"></div>
+                        <p>TIMBRAJE ELECTRÓNICO SII</p>
+                        <p>Res. 80 de 2014. Verifique documento en www.sii.cl</p>
+                        <p class="copia-documento"></p>
+                    </td>
+                    <td style="vertical-align: top;">
+                        <table width="100%" style="border: 1px solid black;">
+                            <tr>
+                                <td>EXENTO</td>
+                                <td><span id="exento">cargando nota ...</span></td>
+                            </tr>
+                            <tr>
+                                <td>TOTAL</td>
+                                <td id="total">cargando nota ...</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div id="boleta-sii"></div>
+
+    <div id="boleta-receptor"></div>
+
+</body>
+
+</html>
