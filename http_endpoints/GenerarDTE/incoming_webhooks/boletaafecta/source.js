@@ -33,7 +33,7 @@ exports = async function (payload, response) {
 
   let ejecutivo = await replaceDiacritics(ejecutivoURI);
 
-  const boletaAfecta = context.services.get("base-dte").db(database).collection("boleta-afecta")
+  const boletaAfecta = context.services.get("mongodb-atlas").db(database).collection("boleta-afecta")
   let ultimoFolio = await boletaAfecta.findOne({ "ultimoFolio": true });
   let nuevoFolio = ultimoFolio.folio + 1;
 
