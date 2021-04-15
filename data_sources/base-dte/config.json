@@ -4,6 +4,6 @@
     "config": {
         "clusterName": "RealmCluster",
         "readPreference": "primary",
-        "wireProtocolEnabled": false
+        "wireProtocolEnabled": true
     }
 }
