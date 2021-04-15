@@ -10,5 +10,13 @@
     {
         "name": "httpRequest",
         "private": false
+    },
+    {
+        "name": "temporalDocumentBody",
+        "private": false
+    },
+    {
+        "name": "joiValidation",
+        "private": false
     }
 ]
