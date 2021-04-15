@@ -1,9 +1,0 @@
-{
-    "name": "base-dte",
-    "type": "mongodb-atlas",
-    "config": {
-        "clusterName": "RealmCluster",
-        "readPreference": "primary",
-        "wireProtocolEnabled": true
-    }
-}
