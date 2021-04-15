@@ -1,6 +1,6 @@
 // This function is the webhook's request handler.
 // exports({query: {servicios: '[{"monto": 1000, "codigo": 1, "nombre": "1", "cantidad": 1}]', paciente: '{"nombre": "nombre paciente", "codigo": 1, "rut": "16211150-7"}', ejecutivo: "nombre ejecutivo"}})
-
+//exports({ query: { type: "61|41|39", servicios:  }})
 exports = async function (payload, response) {
   try{
         const Joi = require('joi');
