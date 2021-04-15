@@ -1,9 +1,9 @@
 // This function is the webhook's request handler.
 // exports({query: {servicios: '[{"monto": 1000, "codigo": 1, "nombre": "1", "cantidad": 1}]', paciente: '{"nombre": "nombre paciente", "codigo": 1, "rut": "16211150-7"}', ejecutivo: "nombre ejecutivo"}})
 
-const Joi = require('joi');
 exports = async function (payload, response) {
-    try{
+  try{
+        const Joi = require('joi');
         const servicesURI = decodeURIComponent(payload.query.servicios),
             pacienteURI = decodeURIComponent(payload.query.paciente);
 
