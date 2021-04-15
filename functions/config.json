@@ -6,5 +6,9 @@
     {
         "name": "replaceDiacritics",
         "private": false
+    },
+    {
+        "name": "httpRequest",
+        "private": false
     }
 ]
